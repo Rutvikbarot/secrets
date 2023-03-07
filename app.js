@@ -10,6 +10,8 @@ const encrypt = require("mongoose-encryption");
 
 const app = express();
 
+console.log(process.env.API_KEY);
+
 app.use(express.json());
 
 app.use(express.static("public"));
@@ -24,6 +26,7 @@ mongoose
       useNewUrlParser: true,
     }
   )
+
   .then((res) => {
     console.log(`
         Database connected successfully
@@ -35,8 +38,10 @@ const userSchema = new mongoose.Schema({
   password: String,
 });
 
-const secret = "Thisisourlittlesecret.";
-userSchema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
+userSchema.plugin(encrypt, {
+  secret: process.env.SECRET,
+  encryptedFields: ["password"],
+});
 
 const User = mongoose.model("User", userSchema);
 
